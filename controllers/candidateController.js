@@ -44,3 +44,12 @@ export const createCandidateData = asyncHandler(async (req, res) => {
     .status(200)
     .json({ candidate, message: "Candidate Created Successfully" });
 });
+
+/**
+ * @description Delete Candidate Data
+ * @method DELETE
+ * @route api/v1/candidate/:id
+ * @access public
+ */
+
+export const deleteCandidateData = asyncHandler(async (req, res) => {});
