@@ -2,6 +2,7 @@ import express from "express";
 import colors from "colors";
 import dotenv from "dotenv";
 import candidateRoute from "./routes/candidateRoute.js";
+import candidateAuth from "./routes/candidateAuth.js";
 import { mongodbConnection } from "./config/mongoDB.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
@@ -21,6 +22,7 @@ app.use(express.static("public"));
 
 // Create Route
 app.use("/api/v1/candidate", candidateRoute);
+app.use("/api/v1/auth", candidateAuth);
 
 // Error Handler
 app.use(errorHandler);

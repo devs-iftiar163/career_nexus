@@ -69,7 +69,7 @@ const candidateSchema = mongoose.Schema(
     name: {
       type: String,
       trim: true,
-      require: true,
+      required: true,
     },
     email: {
       type: String,
@@ -81,7 +81,7 @@ const candidateSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      require: true,
+      required: true,
     },
     photo: {
       type: String,
