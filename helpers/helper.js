@@ -1,17 +1,26 @@
 /**
  * Email Validate
  */
-
 export const isEmail = (email) => {
-  return /^[^\.-/][a-z0-9-_\.]{1,}@[a-z0-9-]{1,}\.[a-z]\.$/.test(email);
+  return /^[^\.-/][a-z0-9-_\.]{1,}@[a-z0-9-]{1,}\.[a-z\.]{2,}$/.test(email);
 };
 
 /**
- * Phone Validation
+ * Phone Validate
+ */
+export const isMobile = (mobile) => {
+  return /^(01|8801|\+8801)[0-9]{9}$/.test(mobile);
+};
+
+/**
+ *
+ * Password Validation
  */
 
-export const isMobile = (mobile) => {
-  return /^(01|8801|\+8801)[0-9]{9} $/.test(mobile);
+export const strictPass = (password) => {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/.test(
+    password
+  );
 };
 
 /**
