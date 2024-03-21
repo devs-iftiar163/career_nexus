@@ -61,20 +61,20 @@ export const randStr = (length = 12) => {
 };
 
 /**
- * Dot to Hy
+ * Token Encode
  */
 export const tokenEncode = (inputString) => {
   // Use the replace method with a regular expression to replace dots with hyphens
-  const stringWithHyphens = inputString.replace(/\./g, "asrafulhaq");
+  const stringWithHyphens = inputString.replace(/\./g, "careernexus");
   return stringWithHyphens;
 };
 
 /**
- * Hypens to Dots
+ * Token Decode
  */
 export const tokenDecode = (inputString) => {
   // Use the replace method with a regular expression to replace hyphens with dots
-  const stringWithDots = inputString.replace(/asrafulhaq/g, ".");
+  const stringWithDots = inputString.replace(/careernexus/g, ".");
   return stringWithDots;
 };
 

@@ -1,12 +1,18 @@
 import asyncHandler from "express-async-handler";
-import { createOTP, isEmail, isMobile } from "../helpers/helper.js";
+import {
+  createOTP,
+  isEmail,
+  isMobile,
+  tokenDecode,
+} from "../helpers/helper.js";
 import Candidate from "../models/Candidate.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { accountActivationEmail } from "../mails/candidateActivation.js";
 
 /**
  * @description Candidate Register
- * @method post
+ * @method POST
  * @route api/v1/auth/candidate
  * @access public
  */
@@ -63,6 +69,15 @@ export const registerCandidate = asyncHandler(async (req, res) => {
 
   //   Send OTP to Authentication
   if (candidate) {
+    // Send Token to Cookie
+    const activationToken = jwt.sign(
+      { auth },
+      process.env.ACTIVATION_SECRET_CODE,
+      { expiresIn: "15min" }
+    );
+
+    res.cookie("activationToken", activationToken);
+
     if (authEmail) {
       // Send OTP
       await accountActivationEmail(auth, { code: otp, link: "" });
@@ -73,4 +88,51 @@ export const registerCandidate = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json({ candidate, message: "Candidate Account Created Successfully" });
+});
+
+/**
+ * @description Candidate Account Activation
+ * @method POST
+ * @route api/v1/auth/candidate-activation/:token
+ * @access public
+ */
+
+export const candidateAccountActivation = asyncHandler(async (req, res) => {
+  // Get Token
+  const { token } = req.params;
+  const { otp } = req.body;
+
+  // Token Decode
+  const activationToken = tokenDecode(token);
+
+  // Verify Token
+
+  const tokenVarify = jwt.verify(
+    activationToken,
+    process.env.ACTIVATION_SECRET_CODE
+  );
+
+  if (!tokenVarify) {
+    return res.status(400).json({ message: " Invalid Token " });
+  }
+
+  // Activate Candidate
+  let activateCandidate = null;
+
+  if (isEmail(tokenVarify.auth)) {
+    activateCandidate = await Candidate.findOne({ email: tokenVarify.auth });
+    if (!activateCandidate) {
+      return res.status(404).json({ message: "Email Not Found" });
+    }
+  } else if (isMobile(tokenVarify.auth)) {
+    activateCandidate = await Candidate.findOne({ phone: tokenVarify.auth });
+    if (!activateCandidate) {
+      return res.status(404).json({ message: "Phone No Not Found" });
+    }
+  } else {
+    return res.status(400).json({ message: "Invalid Candidate Account" });
+  }
+
+  // response
+  res.status(200).json({ message: " Candidate selected Successfully " });
 });
