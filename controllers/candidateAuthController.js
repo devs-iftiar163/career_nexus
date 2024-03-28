@@ -133,6 +133,118 @@ export const candidateAccountActivation = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Invalid Candidate Account" });
   }
 
+  // Check OTP
+  if (otp !== activateCandidate.accessToken) {
+    return res.status(400).json({ message: "OTP Doesn't Match" });
+  }
+
+  // Update Activate Candidate Data
+  activateCandidate.isActive = true;
+  activateCandidate.accessToken = null;
+  activateCandidate.save();
+
+  // Clear Cookie
+  res.clearCookie("activationToken");
+
   // response
-  res.status(200).json({ message: " Candidate selected Successfully " });
+  res.status(200).json({
+    activateCandidate,
+    message: " Candidate Activation Successfully ",
+  });
+});
+
+/**
+ * @description Candidate Account Login
+ * @method POST
+ * @route api/v1/auth/login
+ * @access public
+ */
+
+export const loginCandidate = asyncHandler(async (req, res) => {
+  // Get Data
+  const { auth, password } = req.body;
+
+  // Check Valid Fields
+  if (!auth || !password) {
+    res.status(400).json({ message: "All Fields Are Required" });
+  }
+
+  // Check Candidate Credentials Validity
+  let loginCandidate = null;
+  if (isEmail(auth)) {
+    loginCandidate = await Candidate.findOne({ email: auth });
+
+    // Candidate Email Match
+    if (!loginCandidate) {
+      res.status(404).json({ message: "Candidate Email Not Found" });
+    }
+  } else if (isMobile(auth)) {
+    loginCandidate = await Candidate.findOne({ phone: auth });
+
+    // Candidate Phone Match
+    if (!loginCandidate) {
+      res.status(404).json({ message: "Candidate Phone Doesn't Match" });
+    }
+  } else {
+    res.status(400).json({ message: "Candidate Not Found" });
+  }
+
+  // Password Validity Check
+  const passwordCheck = bcrypt.compareSync(password, loginCandidate.password);
+
+  // Find Matched Password
+  if (!passwordCheck) {
+    res.status(400).json({ message: "Invalid Password" });
+  }
+
+  // Candidate Login Access Token
+  const accessToken = jwt.sign(
+    { auth: auth },
+    process.env.CANDIDATE_LOGIN_KEY,
+    { expiresIn: "365d" }
+  );
+
+  // Set Login Access Token
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.APP_ENV == "Development" ? false : true,
+    path: "/",
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+  });
+
+  // Logged In Success Message
+  res.status(200).json({
+    accessToken,
+    candidate: loginCandidate,
+    message: "Candidate Login Successfull",
+  });
+});
+
+/**
+ * @description Get Logged In Candidate
+ * @method GET
+ * @route api/v1/auth/me
+ * @access private
+ */
+
+export const getLoggedInCandidate = asyncHandler(async (req, res) => {
+  if (!req.loginCandidate) {
+    res.status(400).json({ message: "Candidate Not Logged In" });
+  }
+
+  res
+    .status(200)
+    .json({ auth: req.loginCandidate, message: " Candidate Logged In " });
+});
+
+/**
+ * @description Candidate Account Logout
+ * @method POST
+ * @route api/v1/auth/logout
+ * @access private
+ */
+
+export const candidateLogout = asyncHandler(async (req, res) => {
+  res.clearCookie("accessToken");
+  res.status(200).json({ message: "Candidate Logged Out" });
 });

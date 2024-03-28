@@ -5,6 +5,8 @@ import candidateRoute from "./routes/candidateRoute.js";
 import candidateAuth from "./routes/candidateAuth.js";
 import { mongodbConnection } from "./config/mongoDB.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
 // Init Express
 const app = express();
@@ -16,6 +18,8 @@ const PORT = process.env.PORT || 9090;
 // URL Setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(cors());
 
 // Static Folder
 app.use(express.static("public"));
