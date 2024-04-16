@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Candidate from "../models/Candidate.js";
 import { isEmail, isMobile, strictPass } from "../helpers/helper.js";
+import bcrypt from "bcrypt";
 
 /**
  * @description Get All Candidate
@@ -89,8 +90,16 @@ export const createCandidateData = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Phone Already Exists" });
   }
 
+  // Password Encrypt
+  const hashPass = await bcrypt.hash(password, 10);
+
   //   Create New Candidate
-  const candidate = await Candidate.create({ name, email, phone, password });
+  const candidate = await Candidate.create({
+    name,
+    email,
+    phone,
+    password: hashPass,
+  });
 
   //   Response
   res
