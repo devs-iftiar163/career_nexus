@@ -13,7 +13,7 @@ import { accountActivationEmail } from "../mails/candidateActivation.js";
 /**
  * @description Candidate Register
  * @method POST
- * @route api/v1/auth/candidate
+ * @route api/v1/auth/registercand
  * @access public
  */
 export const registerCandidate = asyncHandler(async (req, res) => {
