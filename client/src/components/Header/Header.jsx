@@ -1,39 +1,47 @@
 import { Link } from "react-router-dom";
+import logo from "../../../src/assets/img/logo_04.png";
+import "./Header.css";
 
 const Header = () => {
   return (
     <header>
       <div className="container">
+        {/* Header Partition */}
         <div className="row">
-          <div className="col-lg-12">
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-              <a className="navbar-brand" href="#">
-                Navbar
-              </a>
-              <button
-                className="navbar-toggler"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span className="navbar-toggler-icon" />
-              </button>
-              <div
-                className="collapse navbar-collapse"
-                id="navbarSupportedContent"
-              >
-                <ul className="navbar-nav me-auto">
-                  <li className="nav-item active">
-                    <Link className="nav-link" href="#">
-                      Home <span className="sr-only">(current)</span>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </nav>
+          {/* Logo Area */}
+          <div className="col-lg-3">
+            <div className="site-logo">
+              <img src={logo} alt="" />
+            </div>
+          </div>
+          {/* Menu Area */}
+          <div className="col-lg-6">
+            <div className="menu-list">
+              <ul>
+                <li>
+                  <Link href="">Home</Link>
+                </li>
+                <li>
+                  <Link href="">About</Link>
+                </li>
+                <li>
+                  <Link href="">Jobs</Link>
+                </li>
+                <li>
+                  <Link href="">Company</Link>
+                </li>
+                <li>
+                  <Link href="">Contact</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          {/* Login / Register */}
+          <div className="col-lg-3">
+            <div className="logn-register">
+              <button className="login">Login</button>
+              <button className="register">Register</button>
+            </div>
           </div>
         </div>
       </div>

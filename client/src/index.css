@@ -66,11 +66,12 @@ p {
 }
 
 a {
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 ul {
   padding: 0;
+  margin: 0;
 }
 
 li {
